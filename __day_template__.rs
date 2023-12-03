@@ -28,13 +28,15 @@ mod tests {
 
     #[test]
     fn test_part_one() {
-        let result = part_one(read_input("crates/day-02/test_input.txt".to_string())?);
-        assert_eq!(result, Some(8));
+        let reader = read_input("test_input.txt".to_string()).unwrap();
+        let result = part_one(reader);
+        assert_eq!(result.unwrap(), 4361);
     }
 
     #[test]
     fn test_part_two() {
-        let result = part_two(read_input("crates/day-02/test_input.txt".to_string())?);
-        assert_eq!(result, Some(281));
+        let reader = read_input("test_input.txt".to_string()).unwrap();
+        let result = part_two(reader);
+        assert_eq!(result.unwrap(), 467835);
     }
 }
