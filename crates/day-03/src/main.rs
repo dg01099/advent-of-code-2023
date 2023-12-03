@@ -16,9 +16,9 @@ pub enum PartTypes {
 #[derive(Clone)]
 pub struct Part {
     pub sign: String,
-    pub row: usize,
-    pub col_start: Option<usize>,
-    pub col_end: Option<usize>,
+    pub row: i32,
+    pub col_start: Option<i32>,
+    pub col_end: Option<i32>,
     pub part_type: PartTypes,
 }
 
@@ -46,7 +46,7 @@ impl Part {
     pub fn empty(row_count: usize, part_types: PartTypes) -> Result<Self, Error> {
         Ok(Part{
             sign: String::new(),
-            row: row_count,
+            row: row_count as i32,
             col_start: None,
             col_end: None,
             part_type: part_types
@@ -66,10 +66,10 @@ pub fn parse_part_list(reader: Box<dyn BufRead>) -> Result<(Vec<Part>, Vec<Part>
         for (col_count, c) in lines.unwrap().chars().enumerate() {
             if c.is_digit(10) {
                 if number.col_start.is_none() {
-                    number.col_start = Some(col_count);
+                    number.col_start = Some(col_count as i32);
                 }
                 number.sign.push(c);
-                number.col_end = Some(col_count);
+                number.col_end = Some(col_count as i32);
 
             } else if number.col_start.is_some() {
                 numbers.push(number.clone());
@@ -78,10 +78,10 @@ pub fn parse_part_list(reader: Box<dyn BufRead>) -> Result<(Vec<Part>, Vec<Part>
 
             if !c.is_digit(10) && c != '.' {
                 if part.col_start.is_none() {
-                    part.col_start = Some(col_count);
+                    part.col_start = Some(col_count as i32);
                 }
                 part.sign.push(c);
-                part.col_end = Some(col_count);
+                part.col_end = Some(col_count as i32);
             } else if part.col_start.is_some() {
                 parts.push(part.clone());
                 part = Part::empty(row_count, PartTypes::Part)?
@@ -119,13 +119,38 @@ pub fn part_one(reader: Box<dyn BufRead>) -> Result<i32, Error> {
 
 pub fn part_two(reader: Box<dyn BufRead>) -> Result<i32, Error> {
     let mut result: i32 = 0;
+    let (numbers,parts) = parse_part_list(reader)?;
+
+    for gear in parts.iter() {
+        let mut adjacent_numbers:Vec<i32> = Vec::new();
+        if gear.sign != "*" {
+            // not a gear
+            continue
+        }
+        for number in numbers.iter() {
+            if number.is_adjacent(gear) {
+                let number_value: i32 = number.sign.parse().unwrap();
+                adjacent_numbers.push(number_value);
+            }
+        }
+
+        if adjacent_numbers.len() == 2 {
+            result += adjacent_numbers.first().unwrap() * adjacent_numbers.last().unwrap();
+        }
+
+    }
+
+    println!("THe sum is {result}");
     Ok(result)
 }
 
 
 fn main() {
+    // if let Ok( reader) = read_input("crates/day-03/input.txt".to_string()) {
+    //     let _= part_one(reader);
+    // }
     if let Ok( reader) = read_input("crates/day-03/test_input.txt".to_string()) {
-        let _= part_one(reader);
+        let _= part_two(reader);
     }
 }
 
