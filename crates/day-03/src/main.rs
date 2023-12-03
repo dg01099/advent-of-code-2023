@@ -149,7 +149,7 @@ fn main() {
     // if let Ok( reader) = read_input("crates/day-03/input.txt".to_string()) {
     //     let _= part_one(reader);
     // }
-    if let Ok( reader) = read_input("crates/day-03/test_input.txt".to_string()) {
+    if let Ok( reader) = read_input("crates/day-03/input.txt".to_string()) {
         let _= part_two(reader);
     }
 }
