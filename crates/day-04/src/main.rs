@@ -4,6 +4,7 @@ use std::fmt::Formatter;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Error};
 use std::str::FromStr;
+use std::ops::Range;
 
 pub fn read_input(file_path: String) -> Result<Box<dyn BufRead>, Box<dyn std::error::Error>> {
     Ok(Box::new(BufReader::new(File::open(file_path)?)))
@@ -86,28 +87,30 @@ pub fn part_two(reader: Box<dyn BufRead>) -> Result<i32, Error> {
         }
     }
 
-    for card in card_stack.iter() {
+    let mut card_stock: Vec<i32> = vec![1; card_stack.iter().count().try_into().unwrap()];
+
+    for (id, card) in card_stack.iter().enumerate() {
         let number_count = card.my_numbers.intersection(&card.winning_numbers).count();
-        let multiplier: i32 = 2;
-        let mut value = 0;
-        if number_count > 0 {
-            value = multiplier.pow(number_count as u32 - 1);
+
+        for index in (Range { start: id, end: id + number_count }) {
+            card_stock[index+1] += 1*card_stock[id];
         }
-        result += value;
-        println!("{card} -> Value: {value} -> Result {result}");
+        result = card_stock.iter().sum();
+        println!("{card}\n -> Count: {number_count} -> Card stock {card_stock:?} -> Result {result}");
     }
+
     Ok(result)
 }
 
 
 
 fn main() {
-    if let Ok(reader) = read_input("crates/day-04/input.txt".to_string()) {
-        let _ = part_one(reader);
-    }
-    // if let Ok( reader) = read_input("crates/day-0/input.txt".to_string()) {
-    //     let _= part_two(reader);
+    // if let Ok(reader) = read_input("crates/day-04/input.txt".to_string()) {
+    //     let _ = part_one(reader);
     // }
+    if let Ok( reader) = read_input("crates/day-04/input.txt".to_string()) {
+        let _= part_two(reader);
+    }
 }
 
 
