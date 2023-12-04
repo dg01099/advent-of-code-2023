@@ -18,8 +18,12 @@ pub fn part_two(reader: Box<dyn BufRead>) -> Result<i32, Error> {
 
 
 fn main() {
-    println!("Hello, world!");
-}
+    // if let Ok( reader) = read_input("crates/day-0/input.txt".to_string()) {
+    //     let _= part_one(reader);
+    // }
+    if let Ok( reader) = read_input("crates/day-0/input.txt".to_string()) {
+        let _= part_two(reader);
+    }
 
 
 #[cfg(test)]
