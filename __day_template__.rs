@@ -24,6 +24,7 @@ fn main() {
     if let Ok( reader) = read_input("crates/day-0/input.txt".to_string()) {
         let _= part_two(reader);
     }
+}
 
 
 #[cfg(test)]
