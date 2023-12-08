@@ -59,15 +59,16 @@ pub fn part_one(instructions: &String, map: &HashMap<String, Instruction>) -> Re
     while position != "ZZZ".to_string() {
 
         let direction = instructions.chars().nth(instruction_count).unwrap();
-        println!("Turn {result} -> Position {position} and turn {direction}");
         position = map.get(&position).unwrap().get(&direction);
 
         // increase counter
         instruction_count += 1;
+        result += 1;
+
         if instruction_count >= instruction_len {
+            println!("Turn {result} -> Position {position:?}");
             instruction_count = 0;
         }
-        result += 1;
     }
     println!("Turn {result} -> Position {position:?}");
     println!("Result: {result}");
@@ -87,12 +88,9 @@ pub fn part_two(instructions: &String, map: &HashMap<String, Instruction>) -> Re
 
     while !positions.iter().all(|f|f.ends_with('Z')) {
 
-        let start_positions = positions.clone();
+        // let start_positions = positions.clone();
 
         let direction = instructions.chars().nth(instruction_count).unwrap();
-        if result % 10000 == 0 {
-            println!("Turn {result} -> Position {positions:?} and turn {direction}");
-        }
 
         // positions.clear();
         // for pos in start_positions.iter() {
@@ -106,10 +104,15 @@ pub fn part_two(instructions: &String, map: &HashMap<String, Instruction>) -> Re
 
         // increase counter
         instruction_count += 1;
+        result += 1;
+
         if instruction_count >= instruction_len {
+            // still alive println
+            if (result / instruction_len as u64) % 10000 == 0 {
+                println!("Turn {result} -> Position {positions:?}");
+            }
             instruction_count = 0;
         }
-        result += 1;
     }
     println!("Turn {result} -> Position {positions:?}");
     println!("Result: {result}");
