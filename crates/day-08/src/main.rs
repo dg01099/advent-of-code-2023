@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Error};
+use num::integer::lcm;
+
 #[derive(Debug)]
 pub struct Instruction {
     left: String,
@@ -77,44 +79,47 @@ pub fn part_one(instructions: &String, map: &HashMap<String, Instruction>) -> Re
 
 pub fn part_two(instructions: &String, map: &HashMap<String, Instruction>) -> Result<u64, Error> {
 
-    let mut result: u64 = 0;
+    let mut result:u64 = 1;
+    let mut loop_count: u64 = 0;
 
     let instruction_len = instructions.len();
     let mut instruction_count: usize = 0;
 
     let mut positions: Vec<String> = map.keys().map(|k|k.to_string()).filter(|k| k.ends_with('A')).collect();
+    let mut loop_counts: Vec<u64> = positions.iter().map(|_|0u64).collect();
 
     println!("Start positions: {:?}", positions);
 
-    while !positions.iter().all(|f|f.ends_with('Z')) {
+    while loop_counts.iter().any(|f|*f == 0) {
 
-        // let start_positions = positions.clone();
-
+        let start_positions = positions.clone();
         let direction = instructions.chars().nth(instruction_count).unwrap();
-
-        // positions.clear();
-        // for pos in start_positions.iter() {
-        //     let instruction = map.get(pos).unwrap();
-        //     let next_pos = instruction.get(&direction);
-        //     positions.push(next_pos);
-        // }
-        positions = positions.iter()
-            .map(|pos| map.get(pos).unwrap().get(&direction))
-            .collect();
+        positions.clear();
 
         // increase counter
         instruction_count += 1;
-        result += 1;
+        loop_count += 1;
+
+        for (i,pos) in start_positions.iter().enumerate() {
+            let instruction = map.get(pos).unwrap();
+            let next_pos = instruction.get(&direction);
+
+            positions.push(next_pos.clone());
+
+            if next_pos.ends_with('Z') {
+                loop_counts[i] = loop_count.clone();
+            }
+        }
 
         if instruction_count >= instruction_len {
-            // still alive println
-            if (result / instruction_len as u64) % 10000 == 0 {
-                println!("Turn {result} -> Position {positions:?}");
-            }
             instruction_count = 0;
         }
     }
-    println!("Turn {result} -> Position {positions:?}");
+    println!("Turn {loop_count} -> Position {positions:?} -> loop_counts {loop_counts:?}");
+
+    for count in loop_counts {
+        result = lcm(result, count as u64)
+    }
     println!("Result: {result}");
     Ok(result)
 }
