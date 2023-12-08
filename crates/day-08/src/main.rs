@@ -108,6 +108,7 @@ pub fn part_two(instructions: &String, map: &HashMap<String, Instruction>) -> Re
 
             if next_pos.ends_with('Z') {
                 loop_counts[i] = loop_count.clone();
+                println!("Turn {loop_count} -> Position {positions:?} -> loop_counts {loop_counts:?}");
             }
         }
 
@@ -115,7 +116,6 @@ pub fn part_two(instructions: &String, map: &HashMap<String, Instruction>) -> Re
             instruction_count = 0;
         }
     }
-    println!("Turn {loop_count} -> Position {positions:?} -> loop_counts {loop_counts:?}");
 
     for count in loop_counts {
         result = lcm(result, count as u64)
