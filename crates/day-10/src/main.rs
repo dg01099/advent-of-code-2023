@@ -44,7 +44,7 @@ mod tests {
     fn test_part_one() {
         let values = read_input("test_input.txt".to_string()).unwrap();
         let result = part_one(values);
-        assert_eq!(result.unwrap(), 114);
+        assert_eq!(result.unwrap(), 8);
     }
 
     #[test]
